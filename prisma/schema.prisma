@@ -1,0 +1,155 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Cliente {
+  id         Int           @id @default(autoincrement())
+  nombre     String
+  email      String?
+  telefono   String?
+  direccion  String?
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+  presupuestos Presupuesto[]
+  eventos      CalendarEvent[]
+  facturas     Factura[]
+}
+
+model Producto {
+  id          Int              @id @default(autoincrement())
+  nombre      String
+  descripcion String?
+  precio      Float
+  tipo        String           @default("producto")
+  categoria   String?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  items        ItemPresupuesto[]
+  facturaItems FacturaItem[]
+}
+
+model Presupuesto {
+  id               Int              @id @default(autoincrement())
+  numero           Int              @default(0)
+  clienteId        Int
+  cliente          Cliente          @relation(fields: [clienteId], references: [id])
+  fecha            DateTime         @default(now())
+  validez          String?
+  notas            String?
+  impuesto         Float            @default(21)
+  estado           String           @default("borrador")
+  frecuencia       String?
+  proximaGeneracion DateTime?
+  esPlantilla      Boolean  @default(false)
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  items     ItemPresupuesto[]
+  attachments Attachment[]
+  factura   Factura?
+}
+
+model ItemPresupuesto {
+  id            Int        @id @default(autoincrement())
+  presupuestoId Int
+  presupuesto   Presupuesto @relation(fields: [presupuestoId], references: [id], onDelete: Cascade)
+  productoId    Int?
+  producto      Producto?  @relation(fields: [productoId], references: [id])
+  descripcion   String
+  cantidad      Float      @default(1)
+  precioUnitario Float
+  total         Float
+}
+
+model Project {
+  id        Int      @id @default(autoincrement())
+  name      String
+  color     String?
+  archived  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  tasks     Task[]
+}
+
+model Task {
+  id               Int      @id @default(autoincrement())
+  title            String
+  description      String?
+  energyLevel      String   @default("media_energia")
+  estimatedMinutes Int?
+  status           String   @default("inbox")
+  projectId        Int?
+  project          Project? @relation(fields: [projectId], references: [id])
+  frictionScore    Int?
+  parentTaskId     Int?
+  parentTask       Task?    @relation("TaskBreakdown", fields: [parentTaskId], references: [id])
+  subtasks         Task[]   @relation("TaskBreakdown")
+  stepOrder        Int?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model DailyState {
+  id            Int      @id @default(autoincrement())
+  date          DateTime @unique
+  energyMood    String
+  topPriorityId Int?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Factura {
+  id            Int      @id @default(autoincrement())
+  numero        Int
+  fecha         DateTime @default(now())
+  presupuestoId Int      @unique
+  presupuesto   Presupuesto @relation(fields: [presupuestoId], references: [id])
+  clienteId     Int
+  cliente       Cliente  @relation(fields: [clienteId], references: [id])
+  items         FacturaItem[]
+  impuesto      Float    @default(21)
+  estado        String   @default("emitida")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model FacturaItem {
+  id             Int     @id @default(autoincrement())
+  facturaId      Int
+  factura        Factura @relation(fields: [facturaId], references: [id])
+  productoId     Int?
+  producto       Producto? @relation(fields: [productoId], references: [id])
+  descripcion    String
+  cantidad       Float
+  precioUnitario Float
+  total          Float
+}
+
+model Attachment {
+  id            Int         @id @default(autoincrement())
+  presupuestoId Int
+  presupuesto   Presupuesto @relation(fields: [presupuestoId], references: [id], onDelete: Cascade)
+  filename      String
+  originalName  String
+  mimeType      String      @default("application/octet-stream")
+  size          Int         @default(0)
+  createdAt     DateTime    @default(now())
+}
+
+model CalendarEvent {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  date        DateTime
+  time        String?
+  duration    Int?
+  type        String   @default("cita")
+  clienteId   Int?
+  cliente     Cliente? @relation(fields: [clienteId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

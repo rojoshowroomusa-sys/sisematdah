@@ -1,26 +1,108 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-canvas: #f5f0e8;
+  --color-surface: #fcf9f4;
+  --color-surface-alt: #f8f3eb;
+  --color-border: #e3ddd4;
+  --color-border-soft: #eeeae2;
+  --color-border-emphasis: #d5ccc0;
+  --color-text-primary: #2c2420;
+  --color-text-secondary: #6b5d55;
+  --color-text-tertiary: #a09086;
+  --color-text-muted: #c4b8ae;
+  --color-accent: #117a6b;
+  --color-accent-hover: #0e6659;
+  --color-accent-soft: #d1f0e9;
+  --color-accent-soft-hover: #a8e3d6;
+  --color-warm-accent: #b45309;
+  --color-warm-accent-hover: #92400e;
+  --color-success: #5c6a46;
+  --color-success-soft: #e5ebe0;
+  --color-destructive: #b91c1c;
+  --color-destructive-soft: #fbe9e9;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --shadow-card: 0 1px 3px color-mix(in srgb, #2c2420 6%, transparent), 0 1px 1px color-mix(in srgb, #2c2420 3%, transparent);
+  --shadow-elevated: 0 4px 8px color-mix(in srgb, #2c2420 6%, transparent), 0 2px 4px color-mix(in srgb, #2c2420 3%, transparent);
+  --shadow-dialog: 0 8px 20px color-mix(in srgb, #2c2420 8%, transparent), 0 4px 8px color-mix(in srgb, #2c2420 4%, transparent);
+  --dark-canvas: #1a1614;
+  --dark-surface: #25201c;
+  --dark-surface-alt: #2f2925;
+  --dark-border: #3d3530;
+  --dark-border-soft: #332d28;
+  --dark-border-emphasis: #4a423c;
+  --dark-text-primary: #e8e2dc;
+  --dark-text-secondary: #b0a69e;
+  --dark-text-tertiary: #7a7068;
+  --dark-accent: #4fc3b3;
+  --dark-accent-hover: #6dd6c8;
+  --dark-accent-soft: #1a3d38;
+  --dark-surface-alt-hover: #352e2a;
+  --animate-fade-in: fade-in 0.3s ease-out;
+  --animate-fade-in-up: fade-in-up 0.35s ease-out;
+  --animate-scale-in: scale-in 0.2s ease-out;
+  --animate-spin: spin 1s linear infinite;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+html { scroll-behavior: smooth; }
+
+button:not(:disabled):active { transform: scale(0.98); }
+a:active { transform: scale(0.98); }
+
+.card-hover { transition: transform 0.15s ease, box-shadow 0.15s ease; }
+.card-hover:hover { transform: translateY(-2px); box-shadow: var(--shadow-elevated); }
+
+.dark {
+  --color-canvas: var(--dark-canvas);
+  --color-surface: var(--dark-surface);
+  --color-surface-alt: var(--dark-surface-alt);
+  --color-border: var(--dark-border);
+  --color-border-soft: var(--dark-border-soft);
+  --color-border-emphasis: var(--dark-border-emphasis);
+  --color-text-primary: var(--dark-text-primary);
+  --color-text-secondary: var(--dark-text-secondary);
+  --color-text-tertiary: var(--dark-text-tertiary);
+  --color-accent: var(--dark-accent);
+  --color-accent-hover: var(--dark-accent-hover);
+  --color-accent-soft: var(--dark-accent-soft);
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.3), 0 1px 1px rgba(0,0,0,0.2);
+  --shadow-elevated: 0 4px 8px rgba(0,0,0,0.3), 0 2px 4px rgba(0,0,0,0.2);
+  --shadow-dialog: 0 8px 20px rgba(0,0,0,0.4), 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.dark .bg-stone-50 { background-color: var(--dark-surface-alt); }
+.dark .bg-stone-50\/50 { background-color: color-mix(in srgb, var(--dark-surface-alt) 50%, transparent); }
+.dark .hover\:bg-stone-50\/50:hover { background-color: color-mix(in srgb, var(--dark-surface-alt) 50%, transparent); }
+.dark .hover\:bg-stone-50:hover { background-color: var(--dark-surface-alt); }
+.dark .bg-stone-100 { background-color: var(--dark-border); }
+.dark .placeholder\:text-text-tertiary::placeholder { color: var(--dark-text-tertiary); }
+
+@media (max-width: 640px) {
+  .card-grid { grid-template-columns: 1fr; }
 }
