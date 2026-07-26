@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getTasks } from "@/lib/org-actions";
+export const dynamic = 'force-dynamic';
 
 interface TaskItem {
   id: number;

@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getClientes, getProductos, crearPresupuesto, getPlantillas } from "@/lib/actions";
+export const dynamic = 'force-dynamic';
 import PresupuestoForm from "../form";
 import { formatEUR } from "@/lib/format";
 

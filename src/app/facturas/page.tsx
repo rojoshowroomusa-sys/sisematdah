@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getFacturas } from "@/lib/actions";
+export const dynamic = 'force-dynamic';
 import { formatEUR, formatDate } from "@/lib/format";
 
 export default async function FacturasPage() {
