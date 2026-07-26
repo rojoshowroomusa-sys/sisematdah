@@ -5,11 +5,14 @@
   "scripts": {
     "dev": "next dev",
     "build": "npx prisma generate && next build",
-    "start": "next start",
+    "cf-build": "npx prisma generate && opennextjs-cloudflare build",
+    "cf-preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "cf-deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "lint": "eslint"
   },
   "dependencies": {
     "@libsql/client": "^0.17.4",
+    "@opennextjs/cloudflare": "^1.20.2",
     "@prisma/adapter-libsql": "^7.9.0",
     "@prisma/adapter-pg": "^7.9.0",
     "@prisma/client": "^7.9.0",
