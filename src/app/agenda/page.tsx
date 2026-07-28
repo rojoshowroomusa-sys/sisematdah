@@ -59,12 +59,12 @@ export default async function AgendaPage({
 
   return (
     <div className="animate-fade-in-up">
-      <div className="flex items-center justify-between mb-7">
+      <div className="flex flex-wrap items-start sm:items-center justify-between gap-3 mb-7">
         <div>
           <h1 className="text-xl font-semibold tracking-tight text-text-primary">Agenda</h1>
           <p className="text-sm text-text-tertiary mt-0.5">{meses[mes]} {año}</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 w-full sm:w-auto">
           <div className="flex border border-border rounded-[8px] overflow-hidden">
             <Link
               href={`/agenda?mes=${mes + 1}&año=${año}${diaSeleccionado ? `&dia=${diaSeleccionado}` : ""}`}
@@ -85,9 +85,9 @@ export default async function AgendaPage({
           </div>
           <Link
             href="/agenda/nuevo"
-            className="text-sm font-medium bg-accent text-white px-4 py-2 rounded-[8px] hover:bg-accent-hover transition-colors"
+            className="text-sm font-medium bg-accent text-white px-4 py-2 rounded-[8px] hover:bg-accent-hover transition-colors whitespace-nowrap"
           >
-            + Nuevo Evento
+            + Nuevo
           </Link>
         </div>
       </div>
@@ -96,19 +96,19 @@ export default async function AgendaPage({
         <div className="lg:col-span-2">
           <div className="bg-surface rounded-[10px] border border-border p-5 shadow-card">
             <div className="flex items-center justify-between mb-4">
-              <Link
-                href={`/agenda?mes=${prevMes + 1}&año=${prevAño}${vista === "semana" ? "&vista=semana" : ""}`}
-                className="text-sm font-medium text-text-tertiary hover:text-accent transition-colors"
-              >
-                ← {meses[prevMes]}
-              </Link>
-              <h2 className="font-semibold text-text-primary">{meses[mes]} {año}</h2>
-              <Link
-                href={`/agenda?mes=${nextMes + 1}&año=${nextAño}${vista === "semana" ? "&vista=semana" : ""}`}
-                className="text-sm font-medium text-text-tertiary hover:text-accent transition-colors"
-              >
-                {meses[nextMes]} →
-              </Link>
+            <Link
+              href={`/agenda?mes=${prevMes + 1}&año=${prevAño}${vista === "semana" ? "&vista=semana" : ""}`}
+              className="text-xs sm:text-sm font-medium text-text-tertiary hover:text-accent transition-colors"
+            >
+              ← {meses[prevMes]}
+            </Link>
+            <h2 className="font-semibold text-sm sm:text-base text-text-primary">{meses[mes]} {año}</h2>
+            <Link
+              href={`/agenda?mes=${nextMes + 1}&año=${nextAño}${vista === "semana" ? "&vista=semana" : ""}`}
+              className="text-xs sm:text-sm font-medium text-text-tertiary hover:text-accent transition-colors"
+            >
+              {meses[nextMes]} →
+            </Link>
             </div>
             {vista === "semana" ? (
               <WeekView eventos={eventos as EventoConCliente[]} mes={mes} año={año} />

@@ -9,7 +9,7 @@ export default async function FacturasPage() {
   return (
     <div>
       <div className="mb-7">
-        <h1 className="text-xl font-semibold tracking-tight text-text-primary">Facturas</h1>
+        <h1 className="text-lg sm:text-xl font-semibold tracking-tight text-text-primary">Facturas</h1>
         <p className="text-sm text-text-tertiary mt-0.5">{facturas.length} facturas emitidas</p>
       </div>
 

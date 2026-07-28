@@ -248,6 +248,14 @@ html.dark {
   html:not(.light) .placeholder\:text-text-tertiary::placeholder { color: var(--dark-text-tertiary); }
 }
 
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar { display: none; }
+
 @media (max-width: 640px) {
   .card-grid { grid-template-columns: 1fr; }
+  table { font-size: 0.8125rem; }
+  th, td { padding-left: 0.75rem !important; padding-right: 0.75rem !important; }
 }

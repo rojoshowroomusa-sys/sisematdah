@@ -25,27 +25,27 @@ export default async function ClienteDetailPage({ params, searchParams }: Props)
 
   return (
     <div>
-      <div className="flex items-center gap-4 mb-5">
-        <Link href="/clientes" className="text-sm text-text-tertiary hover:text-text-secondary transition-colors">
-          ← Clientes
+      <div className="flex items-start sm:items-center gap-3 mb-5">
+        <Link href="/clientes" className="text-sm text-text-tertiary hover:text-text-secondary transition-colors shrink-0 mt-1 sm:mt-0">
+          ←
         </Link>
-        <div className="flex-1">
-          <h1 className="text-xl font-semibold tracking-tight text-text-primary">{cliente.nombre}</h1>
+        <div className="flex-1 min-w-0">
+          <h1 className="text-lg sm:text-xl font-semibold tracking-tight text-text-primary truncate">{cliente.nombre}</h1>
         </div>
         <Link
           href={`/clientes/${cliente.id}/editar`}
-          className="text-sm font-medium text-text-secondary border border-border px-4 py-2 rounded-[8px] hover:bg-surface-alt transition-colors"
+          className="text-xs sm:text-sm font-medium text-text-secondary border border-border px-3 sm:px-4 py-1.5 sm:py-2 rounded-[8px] hover:bg-surface-alt transition-colors shrink-0"
         >
           Editar
         </Link>
       </div>
 
-      <div className="flex gap-1 mb-6 border-b border-border">
+      <div className="flex gap-1 mb-6 border-b border-border overflow-x-auto scrollbar-none">
         {tabs.map((t) => (
           <Link
             key={t.key}
             href={t.href}
-            className={`text-sm px-4 py-2.5 border-b-2 transition-colors -mb-[1px] ${
+            className={`text-sm whitespace-nowrap px-3 sm:px-4 py-2.5 border-b-2 transition-colors -mb-[1px] ${
               activeTab === t.key
                 ? "border-accent text-text-primary font-medium"
                 : "border-transparent text-text-tertiary hover:text-text-secondary"
@@ -109,7 +109,7 @@ export default async function ClienteDetailPage({ params, searchParams }: Props)
           </div>
 
           <div className="bg-surface rounded-[10px] border border-border overflow-hidden shadow-card">
-            <div className="px-5 py-3.5 border-b border-border bg-surface-alt flex items-center justify-between">
+            <div className="px-4 sm:px-5 py-3.5 border-b border-border bg-surface-alt flex items-center justify-between">
               <h2 className="text-xs font-semibold text-text-tertiary uppercase tracking-wider">Historial de presupuestos</h2>
               <Link
                 href={`/presupuestos/nuevo?clienteId=${cliente.id}`}
@@ -123,6 +123,7 @@ export default async function ClienteDetailPage({ params, searchParams }: Props)
                 Este cliente no tiene presupuestos aún
               </div>
             ) : (
+              <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border text-left">
@@ -157,6 +158,7 @@ export default async function ClienteDetailPage({ params, searchParams }: Props)
                   })}
                 </tbody>
               </table>
+              </div>
             )}
           </div>
         </>

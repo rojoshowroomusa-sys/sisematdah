@@ -48,7 +48,7 @@ export function CalendarGrid({ mes, año, diaSeleccionado, eventos }: Props) {
             <Link
               key={d}
               href={`/agenda?mes=${mes + 1}&año=${año}&dia=${d}`}
-              className={`text-center py-2 text-sm rounded-[6px] transition-colors relative ${
+              className={`text-center py-2 sm:py-2.5 text-xs sm:text-sm rounded-[6px] transition-colors relative ${
                 diaSeleccionado === d
                   ? "bg-accent text-white"
                   : esHoy(d)

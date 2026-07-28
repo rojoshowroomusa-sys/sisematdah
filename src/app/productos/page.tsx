@@ -40,12 +40,12 @@ export default async function ProductosPage({
     <div className="animate-fade-in-up">
       <div className="flex items-center justify-between mb-7">
         <div>
-          <h1 className="text-xl font-semibold tracking-tight text-text-primary">Productos / Servicios</h1>
+          <h1 className="text-lg sm:text-xl font-semibold tracking-tight text-text-primary">Productos / Servicios</h1>
           <p className="text-sm text-text-tertiary mt-0.5">{filtered.length} registrados</p>
         </div>
         <Link
           href="/productos/nuevo"
-          className="text-sm font-medium bg-accent text-white px-4 py-2 rounded-[8px] hover:bg-accent-hover transition-colors"
+          className="text-sm font-medium bg-accent text-white px-4 py-2 rounded-[8px] hover:bg-accent-hover transition-colors shrink-0"
         >
           + Nuevo
         </Link>

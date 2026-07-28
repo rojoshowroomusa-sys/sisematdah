@@ -99,7 +99,7 @@ export default function PresupuestoForm({ clientes, productos, defaultValues, de
           <span className="gauge leading-none px-1.5 py-0.5">ⓘ</span>
           <h2 className="text-xs font-semibold text-text-tertiary uppercase tracking-wider">Orden de trabajo</h2>
         </div>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-text-secondary mb-1.5">Cliente *</label>
             <select
@@ -124,7 +124,7 @@ export default function PresupuestoForm({ clientes, productos, defaultValues, de
             />
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-text-secondary mb-1.5">Validez</label>
             <input
@@ -144,7 +144,7 @@ export default function PresupuestoForm({ clientes, productos, defaultValues, de
             />
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-text-secondary mb-1.5">Estado</label>
             <select
@@ -204,37 +204,42 @@ export default function PresupuestoForm({ clientes, productos, defaultValues, de
                     ))}
                   </select>
                 )}
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   <input
                     placeholder="Descripción"
                     value={item.descripcion}
                     onChange={(e) => updateItem(item.key!, "descripcion", e.target.value)}
-                    className="flex-1 border border-border rounded-[6px] px-3 py-2 text-sm text-text-primary bg-stone-50 placeholder:text-text-tertiary focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-colors"
+                    className="w-full sm:flex-1 sm:w-auto border border-border rounded-[6px] px-3 py-2 text-sm text-text-primary bg-stone-50 placeholder:text-text-tertiary focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-colors"
                   />
-                  <input
-                    type="number"
-                    step="0.01"
-                    placeholder="Cant"
-                    value={item.cantidad}
-                    onChange={(e) => updateItem(item.key!, "cantidad", Number(e.target.value))}
-                    className="w-16 border border-border rounded-[6px] px-2 py-2 text-sm text-text-primary bg-stone-50 text-center focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-colors"
-                  />
-                  <input
-                    type="number"
-                    step="0.01"
-                    placeholder="Precio"
-                    value={item.precioUnitario}
-                    onChange={(e) => updateItem(item.key!, "precioUnitario", Number(e.target.value))}
-                    className="w-24 border border-border rounded-[6px] px-2 py-2 text-sm text-text-primary bg-stone-50 text-right focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-colors"
-                  />
-                  <div className="w-24 flex items-center justify-end text-sm font-mono text-text-secondary">
-                    {(item.cantidad * item.precioUnitario).toFixed(2)} €
+                  <div className="flex gap-2 w-full sm:w-auto">
+                    <input
+                      type="number"
+                      step="0.01"
+                      placeholder="Cant"
+                      value={item.cantidad}
+                      onChange={(e) => updateItem(item.key!, "cantidad", Number(e.target.value))}
+                      className="flex-1 sm:w-16 border border-border rounded-[6px] px-2 py-2 text-sm text-text-primary bg-stone-50 text-center focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-colors"
+                    />
+                    <input
+                      type="number"
+                      step="0.01"
+                      placeholder="Precio"
+                      value={item.precioUnitario}
+                      onChange={(e) => updateItem(item.key!, "precioUnitario", Number(e.target.value))}
+                      className="flex-1 sm:w-24 border border-border rounded-[6px] px-2 py-2 text-sm text-text-primary bg-stone-50 text-right focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-colors"
+                    />
+                    <div className="hidden sm:flex w-24 items-center justify-end text-sm font-mono text-text-secondary">
+                      {(item.cantidad * item.precioUnitario).toFixed(2)} €
+                    </div>
+                    {items.length > 1 && (
+                      <button type="button" onClick={() => removeItem(item.key!)} className="self-center text-text-tertiary hover:text-destructive transition-colors text-lg leading-none px-1">
+                        ×
+                      </button>
+                    )}
                   </div>
-                  {items.length > 1 && (
-                    <button type="button" onClick={() => removeItem(item.key!)} className="self-center text-text-tertiary hover:text-destructive transition-colors text-lg leading-none px-1">
-                      ×
-                    </button>
-                  )}
+                  <div className="sm:hidden w-full text-right text-sm font-mono text-text-secondary">
+                    = {(item.cantidad * item.precioUnitario).toFixed(2)} €
+                  </div>
                 </div>
               </div>
             </div>

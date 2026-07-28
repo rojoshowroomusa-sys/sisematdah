@@ -155,7 +155,7 @@ export function PresupuestosDashboard({ presupuestos }: Props) {
   return (
     <>
       {selected.size > 0 && (
-        <div className="bg-accent text-white rounded-[10px] px-4 py-2.5 mb-3 flex items-center gap-3 text-sm shadow-elevated animate-in">
+        <div className="bg-accent text-white rounded-[10px] px-4 py-2.5 mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm shadow-elevated animate-in">
           <span className="font-medium">{selected.size} seleccionados</span>
           <span className="opacity-40">|</span>
           <span className="text-xs text-white/70">Estado:</span>

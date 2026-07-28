@@ -35,34 +35,31 @@ export default async function Home({
     <div className="animate-fade-in-up">
       <div className="flex items-center justify-between mb-7">
         <div>
-          <h1 className="text-xl font-semibold tracking-tight text-text-primary">Presupuestos</h1>
+          <h1 className="text-lg sm:text-xl font-semibold tracking-tight text-text-primary">Presupuestos</h1>
           <p className="text-sm text-text-tertiary mt-0.5">{stats.totalCount} registrados</p>
         </div>
         <Link
           href="/presupuestos/nuevo"
-          className="text-sm font-medium bg-accent text-white px-4 py-2 rounded-[8px] hover:bg-accent-hover transition-colors"
+          className="text-sm font-medium bg-accent text-white px-4 py-2 rounded-[8px] hover:bg-accent-hover transition-colors shrink-0"
         >
           + Nuevo
         </Link>
       </div>
 
-      <div className="bg-surface border border-border rounded-[10px] px-5 py-3 mb-5 flex items-center gap-6 text-sm">
+      <div className="bg-surface border border-border rounded-[10px] px-4 sm:px-5 py-3 mb-5 flex flex-wrap items-center gap-x-5 gap-y-1 text-sm">
         <div className="flex items-baseline gap-1.5">
           <span className="text-text-tertiary font-medium">Totales</span>
           <span className="text-text-primary font-semibold">{stats.totalCount}</span>
         </div>
-        <span className="text-border-soft">/</span>
         <div className="flex items-baseline gap-1.5">
           <span className="text-text-tertiary font-medium">Pendientes</span>
           <span className="text-text-primary font-semibold">{stats.pendingCount}</span>
         </div>
-        <span className="text-border-soft">/</span>
         <div className="flex items-baseline gap-1.5">
           <span className="text-text-tertiary font-medium">Aprobados</span>
           <span className="text-text-primary font-semibold">{stats.approvedCount}</span>
         </div>
-        <span className="text-border-soft">/</span>
-        <div className="flex items-baseline gap-1.5 ml-auto">
+        <div className="flex items-baseline gap-1.5 sm:ml-auto">
           <span className="text-text-tertiary font-medium">Mes actual</span>
           <span className="text-text-primary font-semibold font-mono">{formatEUR(stats.monthTotal)}</span>
         </div>

@@ -28,12 +28,12 @@ export default async function PresupuestoPage({ params }: { params: Promise<{ id
 
   return (
     <div>
-      <div className="flex items-center gap-4 mb-7">
-        <Link href="/" className="text-sm text-text-tertiary hover:text-text-secondary transition-colors">
-          ← Volver
+      <div className="flex items-start sm:items-center gap-3 mb-7">
+        <Link href="/" className="text-sm text-text-tertiary hover:text-text-secondary transition-colors shrink-0 mt-0.5 sm:mt-0">
+          ←
         </Link>
-        <div className="flex-1">
-          <h1 className="text-xl font-semibold tracking-tight text-text-primary">
+        <div className="flex-1 min-w-0">
+          <h1 className="text-lg sm:text-xl font-semibold tracking-tight text-text-primary truncate">
             #{String(presupuesto.numero).padStart(4, "0")}
           </h1>
         </div>
@@ -83,6 +83,7 @@ export default async function PresupuestoPage({ params }: { params: Promise<{ id
       </div>
 
       <div className="bg-surface rounded-[10px] border border-border overflow-hidden mb-6 shadow-card">
+        <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border bg-surface-alt text-left">
@@ -116,6 +117,7 @@ export default async function PresupuestoPage({ params }: { params: Promise<{ id
             <span className="font-medium text-text-primary">Total</span>
             <span className="font-mono w-24 text-right font-semibold text-text-primary">{formatEUR(total)}</span>
           </div>
+        </div>
         </div>
       </div>
 

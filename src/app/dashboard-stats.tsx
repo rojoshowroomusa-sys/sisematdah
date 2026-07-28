@@ -96,7 +96,7 @@ export function DashboardStats({
           <span className="gauge leading-none px-1.5 py-0.5">≡</span>
           <h3 className="text-xs font-semibold text-text-tertiary uppercase tracking-wider">Panel general</h3>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           <div className="relative pl-3 border-l-2 border-accent/40">
             <p className="text-[10px] font-medium text-text-tertiary uppercase tracking-wider">Ingresos totales</p>
             <p className="text-lg font-semibold font-mono text-text-primary mt-0.5">{formatEUR(totalRevenue)}</p>
