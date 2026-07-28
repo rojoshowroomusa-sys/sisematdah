@@ -170,6 +170,36 @@ html.dark {
   --shadow-elevated: 0 4px 8px rgba(0,0,0,0.3), 0 2px 4px rgba(0,0,0,0.2);
   --shadow-dialog: 0 8px 20px rgba(0,0,0,0.4), 0 4px 8px rgba(0,0,0,0.2);
   --shadow-groove: inset 0 1px 2px rgba(0,0,0,0.3);
+  /* Tailwind palette overrides — makes all bg-stone-*, bg-amber-*, etc. work */
+  --color-stone-50: var(--dark-surface-alt);
+  --color-stone-100: var(--dark-border);
+  --color-stone-200: #3d3530;
+  --color-amber-50: #2d2810;
+  --color-amber-100: #3d3220;
+  --color-amber-700: #f59e0b;
+  --color-green-100: #1a2e14;
+  --color-green-700: #6b8f5c;
+  --color-red-100: #2d1414;
+  --color-red-200: #3d1a1a;
+  --color-red-500: #ef4444;
+  --color-red-700: #f87171;
+  --color-purple-100: #1a1a3d;
+  --color-purple-700: #a78bfa;
+  --color-teal-100: #0a2e2a;
+  --color-teal-700: #5eead4;
+  --color-blue-100: #0a1e3d;
+  --color-blue-400: #60a5fa;
+  --color-blue-700: #93c5fd;
+  --color-indigo-100: #1a1a3d;
+  --color-indigo-700: #a5b4fc;
+  --color-stone-300: #57534e;
+  --color-stone-400: #78716c;
+  --color-stone-500: #a8a29e;
+  --color-stone-600: #d6d3d1;
+  --color-stone-700: #57534e;
+  --color-stone-800: #3d3530;
+  --color-stone-900: #1a1614;
+  --color-stone-950: #0f0d0b;
 }
 
 /* ── DARK MODE: sistema operativo (sin preferencia explícita del usuario) ── */
@@ -204,10 +234,40 @@ html.dark {
     --shadow-elevated: 0 4px 8px rgba(0,0,0,0.3), 0 2px 4px rgba(0,0,0,0.2);
     --shadow-dialog: 0 8px 20px rgba(0,0,0,0.4), 0 4px 8px rgba(0,0,0,0.2);
     --shadow-groove: inset 0 1px 2px rgba(0,0,0,0.3);
+    /* Tailwind palette overrides */
+    --color-stone-50: var(--dark-surface-alt);
+    --color-stone-100: var(--dark-border);
+    --color-stone-200: #3d3530;
+    --color-amber-50: #2d2810;
+    --color-amber-100: #3d3220;
+    --color-amber-700: #f59e0b;
+    --color-green-100: #1a2e14;
+    --color-green-700: #6b8f5c;
+    --color-red-100: #2d1414;
+    --color-red-200: #3d1a1a;
+    --color-red-500: #ef4444;
+    --color-red-700: #f87171;
+    --color-purple-100: #1a1a3d;
+    --color-purple-700: #a78bfa;
+    --color-teal-100: #0a2e2a;
+    --color-teal-700: #5eead4;
+    --color-blue-100: #0a1e3d;
+    --color-blue-400: #60a5fa;
+    --color-blue-700: #93c5fd;
+    --color-indigo-100: #1a1a3d;
+    --color-indigo-700: #a5b4fc;
+    --color-stone-300: #57534e;
+    --color-stone-400: #78716c;
+    --color-stone-500: #a8a29e;
+    --color-stone-600: #d6d3d1;
+    --color-stone-700: #57534e;
+    --color-stone-800: #3d3530;
+    --color-stone-900: #1a1614;
+    --color-stone-950: #0f0d0b;
   }
 }
 
-/* Utility overrides para descendientes de .dark */
+/* Clases con estilos fijos (no dependen de palette Tailwind) */
 .dark .canvas-texture {
   background-image:
     radial-gradient(ellipse at 20% 50%, color-mix(in srgb, #7a7068 6%, transparent) 0%, transparent 50%),
@@ -229,23 +289,6 @@ html.dark {
 .dark .gauge-active {
   border-color: color-mix(in srgb, var(--dark-gauge-active) 30%, transparent);
   background: color-mix(in srgb, var(--dark-gauge-active) 8%, var(--dark-surface));
-}
-
-.dark .bg-stone-50 { background-color: var(--dark-surface-alt); }
-.dark .bg-stone-50\/50 { background-color: color-mix(in srgb, var(--dark-surface-alt) 50%, transparent); }
-.dark .hover\:bg-stone-50\/50:hover { background-color: color-mix(in srgb, var(--dark-surface-alt) 50%, transparent); }
-.dark .hover\:bg-stone-50:hover { background-color: var(--dark-surface-alt); }
-.dark .bg-stone-100 { background-color: var(--dark-border); }
-.dark .placeholder\:text-text-tertiary::placeholder { color: var(--dark-text-tertiary); }
-
-/* Utility overrides para sistema operativo dark (sin .dark) */
-@media (prefers-color-scheme: dark) {
-  html:not(.light) .bg-stone-50 { background-color: var(--dark-surface-alt); }
-  html:not(.light) .bg-stone-50\/50 { background-color: color-mix(in srgb, var(--dark-surface-alt) 50%, transparent); }
-  html:not(.light) .hover\:bg-stone-50\/50:hover { background-color: color-mix(in srgb, var(--dark-surface-alt) 50%, transparent); }
-  html:not(.light) .hover\:bg-stone-50:hover { background-color: var(--dark-surface-alt); }
-  html:not(.light) .bg-stone-100 { background-color: var(--dark-border); }
-  html:not(.light) .placeholder\:text-text-tertiary::placeholder { color: var(--dark-text-tertiary); }
 }
 
 .scrollbar-none {
