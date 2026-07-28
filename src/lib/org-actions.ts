@@ -190,8 +190,6 @@ export async function resetDailyTasks(): Promise<ResetResult> {
     data: { date: todayStart, energyMood: "pending" },
   });
 
-  revalidatePath("/org");
-
   return {
     resetPerformed: true,
     tasksReturnedToInbox: result.count,
