@@ -27,13 +27,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`} suppressHydrationWarning>
-      <body className="min-h-full flex flex-col bg-canvas text-text-primary">
+      <body className="min-h-full flex flex-col bg-canvas text-text-primary canvas-texture">
         <script dangerouslySetInnerHTML={{
           __html: `document.documentElement.classList.toggle("dark", localStorage.getItem("theme")==="dark"||(!localStorage.getItem("theme")&&matchMedia("(prefers-color-scheme:dark)").matches))`,
         }} />
         <Nav />
         <KeyboardShortcuts>
-          <main className="flex-1 max-w-6xl mx-auto w-full px-3 sm:px-5 py-4 sm:py-7">
+          <main className="flex-1 max-w-6xl mx-auto w-full px-3 sm:px-5 py-4 sm:py-7 animate-fade-in">
             {children}
           </main>
         </KeyboardShortcuts>

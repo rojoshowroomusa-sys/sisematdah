@@ -23,6 +23,10 @@
   --color-success-soft: #e5ebe0;
   --color-destructive: #b91c1c;
   --color-destructive-soft: #fbe9e9;
+  --color-panel: #efe8dd;
+  --color-gauge: #8a7a6e;
+  --color-gauge-active: #117a6b;
+  --color-sticky: #fef7e0;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --radius-xs: 4px;
@@ -32,6 +36,7 @@
   --shadow-card: 0 1px 3px color-mix(in srgb, #2c2420 6%, transparent), 0 1px 1px color-mix(in srgb, #2c2420 3%, transparent);
   --shadow-elevated: 0 4px 8px color-mix(in srgb, #2c2420 6%, transparent), 0 2px 4px color-mix(in srgb, #2c2420 3%, transparent);
   --shadow-dialog: 0 8px 20px color-mix(in srgb, #2c2420 8%, transparent), 0 4px 8px color-mix(in srgb, #2c2420 4%, transparent);
+  --shadow-groove: inset 0 1px 2px color-mix(in srgb, #2c2420 8%, transparent);
   --dark-canvas: #1a1614;
   --dark-surface: #25201c;
   --dark-surface-alt: #2f2925;
@@ -45,10 +50,15 @@
   --dark-accent-hover: #6dd6c8;
   --dark-accent-soft: #1a3d38;
   --dark-surface-alt-hover: #352e2a;
+  --dark-panel: #1e1917;
+  --dark-gauge: #6b625a;
+  --dark-gauge-active: #4fc3b3;
+  --dark-sticky: #2d2810;
   --animate-fade-in: fade-in 0.3s ease-out;
   --animate-fade-in-up: fade-in-up 0.35s ease-out;
   --animate-scale-in: scale-in 0.2s ease-out;
   --animate-spin: spin 1s linear infinite;
+  --animate-slide-toggle: slide-toggle 0.25s ease-out;
 }
 
 @keyframes fade-in {
@@ -70,13 +80,64 @@
   to { transform: rotate(360deg); }
 }
 
+@keyframes slide-toggle {
+  from { transform: translateX(0); }
+  to { transform: translateX(100%); }
+}
+
 html { scroll-behavior: smooth; }
 
-button:not(:disabled):active { transform: scale(0.98); }
-a:active { transform: scale(0.98); }
+button:not(:disabled):active { transform: scale(0.97); }
+a:active { transform: scale(0.97); }
 
 .card-hover { transition: transform 0.15s ease, box-shadow 0.15s ease; }
-.card-hover:hover { transform: translateY(-2px); box-shadow: var(--shadow-elevated); }
+.card-hover:hover { transform: translateY(-1px); box-shadow: var(--shadow-elevated); }
+
+.canvas-texture {
+  background-image:
+    radial-gradient(ellipse at 20% 50%, color-mix(in srgb, #c4b8ae 4%, transparent) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, color-mix(in srgb, #a09086 3%, transparent) 0%, transparent 50%);
+}
+
+.folder-tab {
+  position: relative;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.folder-tab::before {
+  content: "";
+  position: absolute;
+  left: -12px;
+  top: 0;
+  bottom: 0;
+  width: 12px;
+  border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+}
+
+.gauge {
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  border-radius: var(--radius-xs);
+  padding: 2px 6px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-text-tertiary);
+  box-shadow: var(--shadow-groove);
+  font-family: var(--font-mono);
+}
+
+.gauge-active {
+  color: var(--color-gauge-active);
+  border-color: color-mix(in srgb, var(--color-gauge-active) 30%, transparent);
+  background: color-mix(in srgb, var(--color-gauge-active) 6%, var(--color-surface));
+}
+
+.sticky-note {
+  background: var(--color-sticky);
+  border: 1px solid color-mix(in srgb, #c4b8ae 40%, transparent);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 1px 3px color-mix(in srgb, #2c2420 4%, transparent), inset 0 0 0 1px color-mix(in srgb, #fff 30%, transparent);
+}
 
 .dark {
   --color-canvas: var(--dark-canvas);
@@ -91,9 +152,36 @@ a:active { transform: scale(0.98); }
   --color-accent: var(--dark-accent);
   --color-accent-hover: var(--dark-accent-hover);
   --color-accent-soft: var(--dark-accent-soft);
+  --color-panel: var(--dark-panel);
+  --color-gauge: var(--dark-gauge);
+  --color-gauge-active: var(--dark-gauge-active);
   --shadow-card: 0 1px 3px rgba(0,0,0,0.3), 0 1px 1px rgba(0,0,0,0.2);
   --shadow-elevated: 0 4px 8px rgba(0,0,0,0.3), 0 2px 4px rgba(0,0,0,0.2);
   --shadow-dialog: 0 8px 20px rgba(0,0,0,0.4), 0 4px 8px rgba(0,0,0,0.2);
+  --shadow-groove: inset 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.dark .canvas-texture {
+  background-image:
+    radial-gradient(ellipse at 20% 50%, color-mix(in srgb, #7a7068 6%, transparent) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, color-mix(in srgb, #5a524a 4%, transparent) 0%, transparent 50%);
+}
+
+.dark .sticky-note {
+  background: var(--dark-sticky);
+  border-color: color-mix(in srgb, #5a524a 50%, transparent);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2), inset 0 0 0 1px color-mix(in srgb, #fff 4%, transparent);
+}
+
+.dark .gauge {
+  border-color: var(--dark-border);
+  background: var(--dark-surface);
+  box-shadow: var(--shadow-groove);
+}
+
+.dark .gauge-active {
+  border-color: color-mix(in srgb, var(--dark-gauge-active) 30%, transparent);
+  background: color-mix(in srgb, var(--dark-gauge-active) 8%, var(--dark-surface));
 }
 
 .dark .bg-stone-50 { background-color: var(--dark-surface-alt); }
