@@ -18,7 +18,7 @@ export function ModeSwitch() {
       className={`relative flex items-center rounded-[8px] p-0.5 transition-colors ${
         isOrg
           ? "bg-stone-800/80 ring-1 ring-stone-700/40"
-          : "bg-stone-200/70 ring-1 ring-border/60"
+          : "bg-black/5 dark:bg-white/10 ring-1 ring-border/60"
       }`}
     >
       <div
