@@ -8,61 +8,65 @@ datasource db {
 }
 
 model Cliente {
-  id         Int           @id @default(autoincrement())
-  nombre     String
-  email      String?
-  telefono   String?
-  direccion  String?
-  createdAt  DateTime      @default(now())
-  updatedAt  DateTime      @updatedAt
-  presupuestos Presupuesto[]
-  eventos      CalendarEvent[]
-  facturas     Factura[]
+  id                   Int                  @id @default(autoincrement())
+  nombre               String
+  email                String?
+  telefono             String?
+  direccion            String?
+  createdAt            DateTime             @default(now())
+  updatedAt            DateTime             @updatedAt
+  presupuestos         Presupuesto[]
+  eventos              CalendarEvent[]
+  facturas             Factura[]
+  serviciosContratados ServicioContratado[]
+  tareasRealizadas     TareaRealizada[]
+  pagos                PagoCliente[]
+  serviciosTerceros    ServicioTercero[]
 }
 
 model Producto {
-  id          Int              @id @default(autoincrement())
-  nombre      String
-  descripcion String?
-  precio      Float
-  tipo        String           @default("producto")
-  categoria   String?
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
+  id           Int               @id @default(autoincrement())
+  nombre       String
+  descripcion  String?
+  precio       Float
+  tipo         String            @default("producto")
+  categoria    String?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
   items        ItemPresupuesto[]
   facturaItems FacturaItem[]
 }
 
 model Presupuesto {
-  id               Int              @id @default(autoincrement())
-  numero           Int              @default(0)
-  clienteId        Int
-  cliente          Cliente          @relation(fields: [clienteId], references: [id])
-  fecha            DateTime         @default(now())
-  validez          String?
-  notas            String?
-  impuesto         Float            @default(21)
-  estado           String           @default("borrador")
-  frecuencia       String?
+  id                Int               @id @default(autoincrement())
+  numero            Int               @default(0)
+  clienteId         Int
+  cliente           Cliente           @relation(fields: [clienteId], references: [id])
+  fecha             DateTime          @default(now())
+  validez           String?
+  notas             String?
+  impuesto          Float             @default(21)
+  estado            String            @default("borrador")
+  frecuencia        String?
   proximaGeneracion DateTime?
-  esPlantilla      Boolean  @default(false)
-  createdAt        DateTime         @default(now())
-  updatedAt        DateTime         @updatedAt
-  items     ItemPresupuesto[]
-  attachments Attachment[]
-  factura   Factura?
+  esPlantilla       Boolean           @default(false)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  items             ItemPresupuesto[]
+  attachments       Attachment[]
+  factura           Factura?
 }
 
 model ItemPresupuesto {
-  id            Int        @id @default(autoincrement())
-  presupuestoId Int
-  presupuesto   Presupuesto @relation(fields: [presupuestoId], references: [id], onDelete: Cascade)
-  productoId    Int?
-  producto      Producto?  @relation(fields: [productoId], references: [id])
-  descripcion   String
-  cantidad      Float      @default(1)
+  id             Int         @id @default(autoincrement())
+  presupuestoId  Int
+  presupuesto    Presupuesto @relation(fields: [presupuestoId], references: [id], onDelete: Cascade)
+  productoId     Int?
+  producto       Producto?   @relation(fields: [productoId], references: [id])
+  descripcion    String
+  cantidad       Float       @default(1)
   precioUnitario Float
-  total         Float
+  total          Float
 }
 
 model Project {
@@ -103,24 +107,24 @@ model DailyState {
 }
 
 model Factura {
-  id            Int      @id @default(autoincrement())
+  id            Int           @id @default(autoincrement())
   numero        Int
-  fecha         DateTime @default(now())
-  presupuestoId Int      @unique
-  presupuesto   Presupuesto @relation(fields: [presupuestoId], references: [id])
+  fecha         DateTime      @default(now())
+  presupuestoId Int           @unique
+  presupuesto   Presupuesto   @relation(fields: [presupuestoId], references: [id])
   clienteId     Int
-  cliente       Cliente  @relation(fields: [clienteId], references: [id])
+  cliente       Cliente       @relation(fields: [clienteId], references: [id])
   items         FacturaItem[]
-  impuesto      Float    @default(21)
-  estado        String   @default("emitida")
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  impuesto      Float         @default(21)
+  estado        String        @default("emitida")
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 }
 
 model FacturaItem {
-  id             Int     @id @default(autoincrement())
+  id             Int       @id @default(autoincrement())
   facturaId      Int
-  factura        Factura @relation(fields: [facturaId], references: [id])
+  factura        Factura   @relation(fields: [facturaId], references: [id])
   productoId     Int?
   producto       Producto? @relation(fields: [productoId], references: [id])
   descripcion    String
@@ -152,4 +156,77 @@ model CalendarEvent {
   cliente     Cliente? @relation(fields: [clienteId], references: [id])
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model ServicioContratado {
+  id                Int              @id @default(autoincrement())
+  clienteId         Int
+  cliente           Cliente          @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+  nombre            String
+  descripcion       String?
+  montoMensual      Float
+  diaFacturacion    Int              @default(1)
+  estado            String           @default("activo")
+  frecuenciaFactura String           @default("mensual")
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  tareas            TareaRealizada[]
+  pagos             PagoCliente[]
+}
+
+model TareaRealizada {
+  id          Int                 @id @default(autoincrement())
+  clienteId   Int
+  cliente     Cliente             @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+  servicioId  Int?
+  servicio    ServicioContratado? @relation(fields: [servicioId], references: [id])
+  titulo      String
+  descripcion String?
+  fecha       DateTime            @default(now())
+  horas       Float               @default(0)
+  tipo        String              @default("interna")
+  finalizada  Boolean             @default(true)
+  createdAt   DateTime            @default(now())
+}
+
+model PagoCliente {
+  id         Int                 @id @default(autoincrement())
+  clienteId  Int
+  cliente    Cliente             @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+  servicioId Int?
+  servicio   ServicioContratado? @relation(fields: [servicioId], references: [id])
+  monto      Float
+  fecha      DateTime
+  medio      String              @default("transferencia")
+  periodo    String
+  estado     String              @default("pendiente")
+  notas      String?
+  createdAt  DateTime            @default(now())
+  updatedAt  DateTime            @updatedAt
+}
+
+model ServicioTercero {
+  id                 Int        @id @default(autoincrement())
+  clienteId          Int
+  cliente            Cliente    @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+  proveedorId        Int?
+  proveedor          Proveedor? @relation(fields: [proveedorId], references: [id])
+  proveedorNombre    String
+  concepto           String
+  costo              Float
+  fecha              DateTime   @default(now())
+  facturadoAlCliente Boolean    @default(false)
+  notas              String?
+  createdAt          DateTime   @default(now())
+}
+
+model Proveedor {
+  id        Int               @id @default(autoincrement())
+  nombre    String
+  contacto  String?
+  telefono  String?
+  email     String?
+  notas     String?
+  createdAt DateTime          @default(now())
+  servicios ServicioTercero[]
 }
