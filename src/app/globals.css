@@ -139,7 +139,7 @@ a:active { transform: scale(0.97); }
   box-shadow: 0 1px 3px color-mix(in srgb, #2c2420 4%, transparent), inset 0 0 0 1px color-mix(in srgb, #fff 30%, transparent);
 }
 
-.dark {
+:root.dark {
   --color-canvas: var(--dark-canvas);
   --color-surface: var(--dark-surface);
   --color-surface-alt: var(--dark-surface-alt);
