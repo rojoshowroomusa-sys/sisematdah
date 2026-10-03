@@ -22,13 +22,10 @@ export function ModeSwitch() {
       }`}
     >
       <div
-        className="absolute top-0.5 bottom-0.5 w-[calc(50%-2px)] rounded-[6px] transition-all duration-250 ease-out"
-        style={{
-          left: activeIndex === 0 ? "2px" : "calc(50% + 0px)",
-          backgroundColor: isOrg
-            ? "var(--dark-accent)"
-            : "var(--color-accent)",
-        }}
+        className={`absolute top-0.5 bottom-0.5 w-[calc(50%-2px)] rounded-[6px] transition-all duration-250 ease-out ${
+          isOrg ? "bg-[var(--dark-accent)]" : "bg-accent"
+        }`}
+        style={{ left: activeIndex === 0 ? "2px" : "calc(50% + 0px)" }}
       />
       {modes.map((mode, i) => (
         <Link
@@ -36,7 +33,9 @@ export function ModeSwitch() {
           href={mode.href}
           className={`relative z-10 flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-[6px] transition-colors w-[70px] justify-center ${
             i === activeIndex
-              ? "text-white"
+              ? isOrg
+                ? "text-stone-900"
+                : "text-white dark:text-stone-900"
               : isOrg
                 ? "text-stone-400 hover:text-stone-200"
                 : "text-text-tertiary hover:text-text-primary"

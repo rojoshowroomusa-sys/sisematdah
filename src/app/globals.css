@@ -2,7 +2,13 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-@theme inline {
+/* IMPORTANTE: este bloque NO debe llevar la palabra clave `inline`.
+   Con `@theme inline`, Tailwind inserta el VALOR LITERAL en cada utility
+   (`.bg-canvas { background-color: #f5f0e8 }`) en lugar de la referencia
+   (`var(--color-canvas)`), de modo que los overrides de modo oscuro de
+   `html.dark` y `@media (prefers-color-scheme: dark)` cambian variables que
+   ningún utility consume y el tema oscuro queda inerte. */
+@theme {
   --color-canvas: #f5f0e8;
   --color-surface: #fcf9f4;
   --color-surface-alt: #f8f3eb;
@@ -85,7 +91,7 @@
   to { transform: translateX(100%); }
 }
 
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; color-scheme: light; }
 
 button:not(:disabled):active { transform: scale(0.97); }
 a:active { transform: scale(0.97); }
@@ -141,6 +147,7 @@ a:active { transform: scale(0.97); }
 
 /* ── DARK MODE: manual toggle (clase .dark en <html>) ── */
 html.dark {
+  color-scheme: dark;
   --color-canvas: var(--dark-canvas);
   --color-surface: var(--dark-surface);
   --color-surface-alt: var(--dark-surface-alt);
@@ -202,9 +209,12 @@ html.dark {
   --color-stone-950: #0f0d0b;
 }
 
-/* ── DARK MODE: sistema operativo (sin preferencia explícita del usuario) ── */
+/* ── DARK MODE: sistema operativo (sin preferencia explícita del usuario) ──
+   El guard `:not(.light)` sólo funciona si el script inline de layout.tsx y el
+   ThemeToggle añaden la clase `.light` al elegir el tema claro explícitamente. */
 @media (prefers-color-scheme: dark) {
   html:not(.light) {
+    color-scheme: dark;
     --color-canvas: var(--dark-canvas);
     --color-surface: var(--dark-surface);
     --color-surface-alt: var(--dark-surface-alt);
@@ -265,6 +275,11 @@ html.dark {
     --color-stone-900: #1a1614;
     --color-stone-950: #0f0d0b;
   }
+}
+
+/* ── Tema claro explícito: gana sobre la preferencia del sistema operativo ── */
+html.light {
+  color-scheme: light;
 }
 
 /* Clases con estilos fijos (no dependen de palette Tailwind) */

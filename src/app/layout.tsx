@@ -29,7 +29,7 @@ export default function RootLayout({
     <html lang="es" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`} suppressHydrationWarning>
       <body className="min-h-full flex flex-col bg-canvas text-text-primary canvas-texture">
         <script dangerouslySetInnerHTML={{
-          __html: `document.documentElement.classList.toggle("dark", localStorage.getItem("theme")==="dark"||(!localStorage.getItem("theme")&&matchMedia("(prefers-color-scheme:dark)").matches))`,
+          __html: `(function(){var t=localStorage.getItem("theme");var d=t==="dark"||(!t&&matchMedia("(prefers-color-scheme:dark)").matches);var e=document.documentElement;e.classList.toggle("dark",d);e.classList.toggle("light",!d);})()`,
         }} />
         <Nav />
         <KeyboardShortcuts>

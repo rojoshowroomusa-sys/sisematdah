@@ -5,18 +5,27 @@ import { useEffect, useState } from "react";
 export function ThemeToggle() {
   const [dark, setDark] = useState(false);
 
+  // Aplica el tema y fija la clase opuesta, de modo que el bloque
+  // `@media (prefers-color-scheme: dark)` de globals.css (guardado con
+  // `html:not(.light)`) no pise una elección explícita de tema claro.
+  function applyTheme(next: boolean) {
+    const el = document.documentElement;
+    el.classList.toggle("dark", next);
+    el.classList.toggle("light", !next);
+  }
+
   useEffect(() => {
     const stored = localStorage.getItem("theme");
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
     const isDark = stored === "dark" || (!stored && prefersDark);
     setDark(isDark);
-    document.documentElement.classList.toggle("dark", isDark);
+    applyTheme(isDark);
   }, []);
 
   function toggle() {
     const next = !dark;
     setDark(next);
-    document.documentElement.classList.toggle("dark", next);
+    applyTheme(next);
     localStorage.setItem("theme", next ? "dark" : "light");
   }
 
