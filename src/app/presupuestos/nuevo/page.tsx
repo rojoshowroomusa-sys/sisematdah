@@ -3,7 +3,7 @@ import Link from "next/link";
 import { getClientes, getProductos, crearPresupuesto, getPlantillas } from "@/lib/actions";
 export const dynamic = 'force-dynamic';
 import PresupuestoForm from "../form";
-import { formatEUR } from "@/lib/format";
+import { computeTotals, formatEUR } from "@/lib/format";
 
 export default async function NuevoPresupuestoPage({ searchParams }: { searchParams: Promise<{ plantilla?: string }> }) {
   const [clientes, productos, plantillas] = await Promise.all([getClientes(), getProductos(), getPlantillas()]);
@@ -28,8 +28,7 @@ export default async function NuevoPresupuestoPage({ searchParams }: { searchPar
           <h2 className="text-xs font-semibold text-text-tertiary uppercase tracking-wider mb-3">Desde una plantilla</h2>
           <div className="flex flex-wrap gap-2">
             {plantillas.map((p) => {
-              const subtotal = p.items.reduce((s, i) => s + i.total, 0);
-              const total = subtotal + subtotal * (p.impuesto / 100);
+              const total = computeTotals(p.items.map((i) => i.total), p.impuesto).total;
               return (
                 <Link
                   key={p.id}

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
-import { formatEUR, formatDate } from "@/lib/format";
+import { computeTotals, formatEUR, formatDate } from "@/lib/format";
 import { BudgetStatusBadge } from "./budget-status-badge";
 import { QuickStatusButtons } from "./budget-actions-client";
 import { showToast } from "@/components/toast";
@@ -45,7 +45,7 @@ export function PresupuestosDashboard({ presupuestos }: Props) {
     const list = presupuestos.map((p) => ({
       ...p,
       clienteNombre: p.cliente.nombre,
-      total: p.items.reduce((s, i) => s + i.total, 0) * (1 + p.impuesto / 100),
+      total: computeTotals(p.items.map((i) => i.total), p.impuesto).total,
     }));
     list.sort((a, b) => {
       let cmp = 0;

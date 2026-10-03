@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "./prisma";
+import { computeTotals, lineTotal, normalizeTaxRate, roundToCents } from "./format";
 
 // ── CLIENTS ──
 
@@ -82,7 +83,7 @@ export async function getProductoConUso(id: number) {
   const unicos = presupuestos.filter(
     (p, i, arr) => arr.findIndex((x) => x.id === p.id) === i
   );
-  const totalIngresos = producto.items.reduce((sum, i) => sum + i.total, 0);
+  const totalIngresos = roundToCents(producto.items.reduce((sum, i) => sum + roundToCents(i.total), 0));
   const vecesUsado = producto.items.length;
 
   return { producto, presupuestos: unicos, totalIngresos, vecesUsado };
@@ -155,10 +156,12 @@ export async function getPresupuestosStats() {
     return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
   });
 
-  const monthTotal = thisMonth.reduce((sum, p) => {
-    const subtotal = p.items.reduce((s, i) => s + i.total, 0);
-    return sum + subtotal + subtotal * (p.impuesto / 100);
-  }, 0);
+  const monthTotal = roundToCents(
+    thisMonth.reduce(
+      (sum, p) => sum + computeTotals(p.items.map((i) => i.total), p.impuesto).total,
+      0
+    )
+  );
 
   const monthlyRevenue = Array.from({ length: 6 }, (_, i) => {
     const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
@@ -166,10 +169,12 @@ export async function getPresupuestosStats() {
       const pd = new Date(p.fecha);
       return pd.getMonth() === d.getMonth() && pd.getFullYear() === d.getFullYear();
     });
-    const total = monthPres.reduce((sum, p) => {
-      const s = p.items.reduce((a, i) => a + i.total, 0);
-      return sum + s + s * (p.impuesto / 100);
-    }, 0);
+    const total = roundToCents(
+      monthPres.reduce(
+        (sum, p) => sum + computeTotals(p.items.map((i) => i.total), p.impuesto).total,
+        0
+      )
+    );
     return { year: d.getFullYear(), month: d.getMonth(), label: d.toLocaleString("es", { month: "short" }), total };
   }).reverse();
 
@@ -183,10 +188,12 @@ export async function getDashboardStats() {
   ]);
 
   const now = new Date();
-  const totalRevenue = presupuestos.reduce((sum, p) => {
-    const s = p.items.reduce((a, i) => a + i.total, 0);
-    return sum + s + s * (p.impuesto / 100);
-  }, 0);
+  const totalRevenue = roundToCents(
+    presupuestos.reduce(
+      (sum, p) => sum + computeTotals(p.items.map((i) => i.total), p.impuesto).total,
+      0
+    )
+  );
 
   const newClientsThisMonth = clientes.filter((c) => {
     const d = new Date(c.createdAt);
@@ -247,7 +254,7 @@ export async function crearPresupuesto(data: {
     descripcion: item.descripcion,
     cantidad: item.cantidad,
     precioUnitario: item.precioUnitario,
-    total: item.cantidad * item.precioUnitario,
+    total: lineTotal(item.cantidad, item.precioUnitario),
   }));
 
   const proximaGeneracion = data.frecuencia ? calcularProximaGeneracion(data.frecuencia, data.fecha ? new Date(data.fecha) : new Date()) : null;
@@ -259,7 +266,7 @@ export async function crearPresupuesto(data: {
       fecha: data.fecha ? new Date(data.fecha) : new Date(),
       validez: data.validez,
       notas: data.notas,
-      impuesto: data.impuesto ?? 21,
+      impuesto: normalizeTaxRate(data.impuesto),
       estado: data.estado ?? "borrador",
       frecuencia: data.frecuencia || null,
       proximaGeneracion,
@@ -292,7 +299,7 @@ export async function actualizarPresupuesto(
     descripcion: item.descripcion,
     cantidad: item.cantidad,
     precioUnitario: item.precioUnitario,
-    total: item.cantidad * item.precioUnitario,
+    total: lineTotal(item.cantidad, item.precioUnitario),
   }));
 
   const proximaGeneracion = data.frecuencia !== undefined
@@ -306,7 +313,7 @@ export async function actualizarPresupuesto(
       fecha: data.fecha ? new Date(data.fecha) : undefined,
       validez: data.validez,
       notas: data.notas,
-      impuesto: data.impuesto ?? 21,
+      impuesto: normalizeTaxRate(data.impuesto),
       estado: data.estado ?? "borrador",
       frecuencia: data.frecuencia,
       proximaGeneracion,
@@ -349,7 +356,7 @@ export async function duplicarPresupuesto(id: number) {
           descripcion: item.descripcion,
           cantidad: item.cantidad,
           precioUnitario: item.precioUnitario,
-          total: item.total,
+          total: roundToCents(item.total),
         })),
       },
     },
@@ -396,7 +403,7 @@ export async function generarProximosRecurrentes() {
             descripcion: item.descripcion,
             cantidad: item.cantidad,
             precioUnitario: item.precioUnitario,
-            total: item.total,
+            total: roundToCents(item.total),
           })),
         },
       },
@@ -538,7 +545,7 @@ export async function generarFactura(presupuestoId: number) {
           descripcion: i.descripcion,
           cantidad: i.cantidad,
           precioUnitario: i.precioUnitario,
-          total: i.total,
+          total: roundToCents(i.total),
         })),
       },
     },

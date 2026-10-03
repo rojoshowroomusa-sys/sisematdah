@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getFactura } from "@/lib/actions";
-import { formatEUR, formatDate } from "@/lib/format";
+import { computeTotals, formatEUR, formatMoney, formatDate } from "@/lib/format";
 import { FacturaActions } from "./actions";
 
 export default async function FacturaDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -9,8 +9,10 @@ export default async function FacturaDetailPage({ params }: { params: Promise<{ 
   const factura = await getFactura(Number(id));
   if (!factura) notFound();
 
-  const subtotal = factura.items.reduce((s, i) => s + i.total, 0);
-  const total = subtotal + subtotal * (factura.impuesto / 100);
+  const { subtotal, impuesto, total } = computeTotals(
+    factura.items.map((i) => i.total),
+    factura.impuesto
+  );
 
   return (
     <div className="max-w-3xl">
@@ -60,8 +62,8 @@ export default async function FacturaDetailPage({ params }: { params: Promise<{ 
               <tr key={item.id}>
                 <td className="px-4 py-3 text-sm text-text-primary">{item.descripcion}</td>
                 <td className="px-4 py-3 text-sm text-right text-text-secondary">{item.cantidad}</td>
-                <td className="px-4 py-3 text-sm text-right text-text-secondary">{formatEUR(item.precioUnitario)}</td>
-                <td className="px-4 py-3 text-sm text-right font-mono text-text-primary">{formatEUR(item.total)}</td>
+                <td className="px-4 py-3 text-sm text-right text-text-secondary">{formatMoney(item.precioUnitario)}</td>
+                <td className="px-4 py-3 text-sm text-right font-mono text-text-primary">{formatMoney(item.total)}</td>
               </tr>
             ))}
           </tbody>
@@ -73,7 +75,7 @@ export default async function FacturaDetailPage({ params }: { params: Promise<{ 
           </div>
           <div className="flex gap-10 text-sm">
             <span className="text-text-tertiary">IVA ({factura.impuesto}%)</span>
-            <span className="font-mono w-24 text-right text-text-secondary">{formatEUR(subtotal * factura.impuesto / 100)}</span>
+            <span className="font-mono w-24 text-right text-text-secondary">{formatEUR(impuesto)}</span>
           </div>
           <div className="flex gap-10 text-sm font-medium">
             <span className="text-text-primary">Total</span>

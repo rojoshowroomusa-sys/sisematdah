@@ -1,4 +1,5 @@
 import { Document, Page, Text, View, StyleSheet, Font } from "@react-pdf/renderer";
+import { computeTotals, formatEUR, formatMoney } from "./format";
 
 Font.register({
   family: "Helvetica",
@@ -44,9 +45,10 @@ interface PDFPresupuestoProps {
 }
 
 export function PresupuestoPDF({ presupuesto }: PDFPresupuestoProps) {
-  const subtotal = presupuesto.items.reduce((s, i) => s + i.total, 0);
-  const impuesto = subtotal * (presupuesto.impuesto / 100);
-  const total = subtotal + impuesto;
+  const { subtotal, impuesto, total } = computeTotals(
+    presupuesto.items.map((i) => i.total),
+    presupuesto.impuesto
+  );
 
   return (
     <Document>
@@ -87,8 +89,8 @@ export function PresupuestoPDF({ presupuesto }: PDFPresupuestoProps) {
             <View style={styles.tableRow} key={i}>
               <Text style={styles.colDesc}>{item.descripcion}</Text>
               <Text style={styles.colCant}>{item.cantidad}</Text>
-              <Text style={styles.colPrecio}>{item.precioUnitario.toFixed(2)} €</Text>
-              <Text style={styles.colTotal}>{item.total.toFixed(2)} €</Text>
+              <Text style={styles.colPrecio}>{formatMoney(item.precioUnitario)}</Text>
+              <Text style={styles.colTotal}>{formatMoney(item.total)}</Text>
             </View>
           ))}
         </View>
@@ -96,15 +98,15 @@ export function PresupuestoPDF({ presupuesto }: PDFPresupuestoProps) {
         <View style={styles.totalSection}>
           <View style={styles.totalRow}>
             <Text style={styles.totalLabel}>Subtotal:</Text>
-            <Text style={styles.totalValue}>{subtotal.toFixed(2)} €</Text>
+            <Text style={styles.totalValue}>{formatEUR(subtotal)}</Text>
           </View>
           <View style={styles.totalRow}>
             <Text style={styles.totalLabel}>IVA ({presupuesto.impuesto}%):</Text>
-            <Text style={styles.totalValue}>{impuesto.toFixed(2)} €</Text>
+            <Text style={styles.totalValue}>{formatEUR(impuesto)}</Text>
           </View>
           <View style={[styles.totalRow, styles.grandTotal]}>
             <Text style={styles.totalLabel}>Total:</Text>
-            <Text style={styles.totalValue}>{total.toFixed(2)} €</Text>
+            <Text style={styles.totalValue}>{formatEUR(total)}</Text>
           </View>
         </View>
 

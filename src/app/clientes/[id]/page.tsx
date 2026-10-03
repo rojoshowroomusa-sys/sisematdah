@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getCliente } from "@/lib/actions";
-import { formatEUR, formatDate } from "@/lib/format";
+import { computeTotals, formatEUR, formatDate, roundToCents } from "@/lib/format";
 import { BudgetStatusBadge } from "@/app/budget-status-badge";
 import { ServiciosPanel } from "./servicios-panel";
 
@@ -22,6 +22,13 @@ export default async function ClienteDetailPage({ params, searchParams }: Props)
     { key: "servicios", label: "Servicios", href: `/clientes/${cliente.id}?tab=servicios` },
     { key: "facturas", label: "Facturas", href: `/clientes/${cliente.id}?tab=facturas` },
   ];
+
+  const totalFacturado = roundToCents(
+    cliente.presupuestos.reduce(
+      (sum, p) => sum + computeTotals(p.items.map((i) => i.total), p.impuesto).total,
+      0
+    )
+  );
 
   return (
     <div>
@@ -96,12 +103,7 @@ export default async function ClienteDetailPage({ params, searchParams }: Props)
                 <p className="text-sm">
                   <span className="text-text-tertiary">Total facturado:</span>{" "}
                   <span className="text-text-primary font-semibold font-mono">
-                    {formatEUR(
-                      cliente.presupuestos.reduce((sum, p) => {
-                        const s = p.items.reduce((a, i) => a + i.total, 0);
-                        return sum + s + s * (p.impuesto / 100);
-                      }, 0)
-                    )}
+                    {formatEUR(totalFacturado)}
                   </span>
                 </p>
               </div>
@@ -136,8 +138,7 @@ export default async function ClienteDetailPage({ params, searchParams }: Props)
                 </thead>
                 <tbody>
                   {cliente.presupuestos.map((p) => {
-                    const subtotal = p.items.reduce((s, i) => s + i.total, 0);
-                    const total = subtotal + subtotal * (p.impuesto / 100);
+                    const total = computeTotals(p.items.map((i) => i.total), p.impuesto).total;
                     return (
                       <tr key={p.id} className="border-b border-border/50 last:border-b-0 hover:bg-stone-50/50 transition-colors">
                         <td className="px-5 py-3 font-mono text-xs text-text-tertiary">

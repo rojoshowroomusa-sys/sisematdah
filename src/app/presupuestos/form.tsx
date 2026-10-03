@@ -2,6 +2,7 @@
 
 import { useState, useActionState } from "react";
 import type { ItemFormData } from "@/lib/types";
+import { computeTotals, formatEUR, lineTotal, normalizeTaxRate } from "@/lib/format";
 
 interface PresupuestoFormData {
   clienteId: number;
@@ -41,6 +42,8 @@ export default function PresupuestoForm({ clientes, productos, defaultValues, de
       : [emptyItem()]
   );
 
+  const [impuestoInput, setImpuestoInput] = useState(String(defaultValues?.impuesto ?? 21));
+
   const [error, submitAction, pending] = useActionState(
     async (_prev: string | null, formData: FormData) => {
       try {
@@ -50,7 +53,7 @@ export default function PresupuestoForm({ clientes, productos, defaultValues, de
           fecha: (formData.get("fecha") as string) || undefined,
           validez: (formData.get("validez") as string) || undefined,
           notas: (formData.get("notas") as string) || undefined,
-          impuesto: Number(formData.get("impuesto")),
+          impuesto: normalizeTaxRate(formData.get("impuesto")),
           estado: (formData.get("estado") as string) || "borrador",
           frecuencia: (formData.get("frecuencia") as string) || undefined,
           items: itemsData,
@@ -63,9 +66,14 @@ export default function PresupuestoForm({ clientes, productos, defaultValues, de
     null
   );
 
-  const subtotal = items.reduce((s, i) => s + i.cantidad * i.precioUnitario, 0);
-  const impuesto = defaultValues?.impuesto ?? 21;
-  const total = subtotal + subtotal * (impuesto / 100);
+  // El IVA es un campo controlado: alimenta tanto el preview como el payload que se
+  // envía, así que ya no pueden discrepar. `normalizeTaxRate` mapea el campo vacío
+  // (que antes se guardaba como 0 %) de vuelta al 21 % por defecto.
+  const impuesto = normalizeTaxRate(impuestoInput);
+  const { subtotal, impuesto: ivaMonto, total } = computeTotals(
+    items.map((i) => i.cantidad * i.precioUnitario),
+    impuesto
+  );
 
   function addItem() {
     setItems((prev) => [...prev, emptyItem()]);
@@ -139,7 +147,11 @@ export default function PresupuestoForm({ clientes, productos, defaultValues, de
             <input
               name="impuesto"
               type="number"
-              defaultValue={defaultValues?.impuesto ?? 21}
+              min={0}
+              max={100}
+              step="0.01"
+              value={impuestoInput}
+              onChange={(e) => setImpuestoInput(e.target.value)}
               className="w-full border border-border rounded-[6px] px-3 py-2 text-sm text-text-primary bg-stone-50 focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-colors"
             />
           </div>
@@ -229,7 +241,7 @@ export default function PresupuestoForm({ clientes, productos, defaultValues, de
                       className="flex-1 sm:w-24 border border-border rounded-[6px] px-2 py-2 text-sm text-text-primary bg-stone-50 text-right focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-colors"
                     />
                     <div className="hidden sm:flex w-24 items-center justify-end text-sm font-mono text-text-secondary">
-                      {(item.cantidad * item.precioUnitario).toFixed(2)} €
+                      {formatEUR(lineTotal(item.cantidad, item.precioUnitario))}
                     </div>
                     {items.length > 1 && (
                       <button type="button" onClick={() => removeItem(item.key!)} className="self-center text-text-tertiary hover:text-destructive transition-colors text-lg leading-none px-1">
@@ -238,7 +250,7 @@ export default function PresupuestoForm({ clientes, productos, defaultValues, de
                     )}
                   </div>
                   <div className="sm:hidden w-full text-right text-sm font-mono text-text-secondary">
-                    = {(item.cantidad * item.precioUnitario).toFixed(2)} €
+                    = {formatEUR(lineTotal(item.cantidad, item.precioUnitario))}
                   </div>
                 </div>
               </div>
@@ -249,15 +261,15 @@ export default function PresupuestoForm({ clientes, productos, defaultValues, de
         <div className="border-t border-border mt-4 pt-4 flex flex-col items-end gap-1">
           <div className="flex gap-10 text-sm">
             <span className="text-text-tertiary">Subtotal</span>
-            <span className="font-mono w-24 text-right text-text-secondary">{subtotal.toFixed(2)} €</span>
+            <span className="font-mono w-24 text-right text-text-secondary">{formatEUR(subtotal)}</span>
           </div>
           <div className="flex gap-10 text-sm">
             <span className="text-text-tertiary">IVA ({impuesto}%)</span>
-            <span className="font-mono w-24 text-right text-text-secondary">{(subtotal * impuesto / 100).toFixed(2)} €</span>
+            <span className="font-mono w-24 text-right text-text-secondary">{formatEUR(ivaMonto)}</span>
           </div>
           <div className="flex gap-10 text-sm font-medium">
             <span className="text-text-primary">Total</span>
-            <span className="font-mono w-24 text-right text-text-primary">{total.toFixed(2)} €</span>
+            <span className="font-mono w-24 text-right text-text-primary">{formatEUR(total)}</span>
           </div>
         </div>
       </div>
@@ -284,7 +296,7 @@ export default function PresupuestoForm({ clientes, productos, defaultValues, de
           {pending ? "Guardando..." : "Guardar Presupuesto"}
         </button>
         <span className="text-[11px] text-text-tertiary font-mono">
-          {items.length} {items.length === 1 ? "partida" : "partidas"} · {total.toFixed(2)} € total
+          {items.length} {items.length === 1 ? "partida" : "partidas"} · {formatEUR(total)} total
         </span>
       </div>
     </form>

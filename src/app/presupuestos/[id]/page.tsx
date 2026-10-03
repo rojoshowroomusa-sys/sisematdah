@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getPresupuesto } from "@/lib/actions";
-import { formatEUR, formatDate } from "@/lib/format";
+import { computeTotals, formatEUR, formatMoney, formatDate } from "@/lib/format";
 import { BudgetStatusBadge } from "@/app/budget-status-badge";
 import { DetailStatusButton, DeleteBudgetButton, DuplicateBudgetButton, PlantillaToggleButton, GenerarFacturaButton } from "@/app/budget-actions-client";
 import { SendEmailButton } from "@/app/send-email-button";
@@ -23,8 +23,10 @@ export default async function PresupuestoPage({ params }: { params: Promise<{ id
   const presupuesto = await getPresupuesto(Number(id));
   if (!presupuesto) notFound();
 
-  const subtotal = presupuesto.items.reduce((s, i) => s + i.total, 0);
-  const total = subtotal + subtotal * (presupuesto.impuesto / 100);
+  const { subtotal, impuesto, total } = computeTotals(
+    presupuesto.items.map((i) => i.total),
+    presupuesto.impuesto
+  );
 
   return (
     <div>
@@ -98,8 +100,8 @@ export default async function PresupuestoPage({ params }: { params: Promise<{ id
               <tr key={i} className="border-b border-border/50 last:border-b-0">
                 <td className="px-5 py-3.5 text-sm text-text-primary">{item.descripcion}</td>
                 <td className="px-5 py-3.5 text-sm text-text-secondary text-center">{item.cantidad}</td>
-                <td className="px-5 py-3.5 text-sm font-mono text-text-secondary text-right">{formatEUR(item.precioUnitario)}</td>
-                <td className="px-5 py-3.5 text-sm font-mono text-text-primary text-right font-medium">{formatEUR(item.total)}</td>
+                <td className="px-5 py-3.5 text-sm font-mono text-text-secondary text-right">{formatMoney(item.precioUnitario)}</td>
+                <td className="px-5 py-3.5 text-sm font-mono text-text-primary text-right font-medium">{formatMoney(item.total)}</td>
               </tr>
             ))}
           </tbody>
@@ -111,7 +113,7 @@ export default async function PresupuestoPage({ params }: { params: Promise<{ id
           </div>
           <div className="flex gap-10 text-sm">
             <span className="text-text-tertiary">IVA ({presupuesto.impuesto}%)</span>
-            <span className="font-mono w-24 text-right text-text-secondary">{formatEUR(subtotal * presupuesto.impuesto / 100)}</span>
+            <span className="font-mono w-24 text-right text-text-secondary">{formatEUR(impuesto)}</span>
           </div>
           <div className="flex gap-10 text-sm pt-1 border-t border-border/50 w-full justify-end mt-1">
             <span className="font-medium text-text-primary">Total</span>

@@ -1,15 +1,16 @@
 import { notFound } from "next/navigation";
 import { getFactura } from "@/lib/actions";
-import { formatEUR, formatDate } from "@/lib/format";
+import { computeTotals, formatEUR, formatMoney, formatDate } from "@/lib/format";
 
 export default async function FacturaPDFPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const factura = await getFactura(Number(id));
   if (!factura) notFound();
 
-  const subtotal = factura.items.reduce((s, i) => s + i.total, 0);
-  const impuesto = subtotal * (factura.impuesto / 100);
-  const total = subtotal + impuesto;
+  const { subtotal, impuesto, total } = computeTotals(
+    factura.items.map((i) => i.total),
+    factura.impuesto
+  );
 
   return (
     <div className="max-w-[210mm] mx-auto p-8 text-sm print:p-0">
@@ -43,8 +44,8 @@ export default async function FacturaPDFPage({ params }: { params: Promise<{ id:
             <tr key={item.id} className="border-b border-border">
               <td className="py-3 text-text-primary">{item.descripcion}</td>
               <td className="py-3 text-right text-text-secondary">{item.cantidad}</td>
-              <td className="py-3 text-right text-text-secondary">{formatEUR(item.precioUnitario)}</td>
-              <td className="py-3 text-right font-mono text-text-primary">{formatEUR(item.total)}</td>
+              <td className="py-3 text-right text-text-secondary">{formatMoney(item.precioUnitario)}</td>
+              <td className="py-3 text-right font-mono text-text-primary">{formatMoney(item.total)}</td>
             </tr>
           ))}
         </tbody>
